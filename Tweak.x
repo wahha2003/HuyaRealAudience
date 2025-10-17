@@ -3,12 +3,12 @@
 #import <Foundation/Foundation.h>
 
 @interface HYLiveRoomImmersionVipEnterView : UIControl
-- (id)formattedToatalCount:(NSInteger)arg1;
+- (id)formattedTotalCount:(NSInteger)arg1;
 @end
 
 %hook HYLiveRoomImmersionVipEnterView
 
-- (id)formattedToatalCount:(NSInteger)arg1 {
+- (id)formattedTotalCount:(NSInteger)arg1 {
     // 参数 <= 9999，执行原方法
     if (arg1 <= 9999) {
         return %orig(arg1);
