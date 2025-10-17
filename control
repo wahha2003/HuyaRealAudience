@@ -1,0 +1,9 @@
+Package: com.yourcompany.huyarealaudience
+Name: HuyaRealAudience
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome MobileSubstrate tweak!
+Maintainer: wahha2003
+Author: wahha2003
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
