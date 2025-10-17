@@ -1,34 +1,32 @@
-/* How to Hook with Logos
-Hooks are written with syntax similar to that of an Objective-C @implementation.
-You don't need to #include <substrate.h>, it will be done automatically, as will
-the generation of a class list and an automatic constructor.
+#import <UIKit/UIKit.h>
+#import <objc/runtime.h>
+#import <Foundation/Foundation.h>
 
-%hook ClassName
+@interface HYLiveRoomImmersionVipEnterView : UIControl
+- (id)formattedToatalCount:(NSInteger)arg1;
+@end
 
-// Hooking a class method
-+ (id)sharedInstance {
-	return %orig;
+%hook HYLiveRoomImmersionVipEnterView
+
+- (id)formattedToatalCount:(NSInteger)arg1 {
+    // 参数 <= 9999，执行原方法
+    if (arg1 <= 9999) {
+        return %orig(arg1);
+    }
+    
+    // 参数 > 9999，返回 x.xxxxw 格式
+    double countInW = arg1 / 10000.0;
+    
+    // 保留四位小数并去掉尾部多余 0
+    NSString *result = [NSString stringWithFormat:@"%.4f", countInW];
+    
+    // 去掉尾部多余 0 和小数点，如果是整数
+    NSDecimalNumber *num = [NSDecimalNumber decimalNumberWithString:result];
+    result = [num stringValue]; // 自动去掉尾部 0
+    result = [result stringByAppendingString:@"w"];
+    
+    // ARC 友好，直接返回 NSString
+    return result;
 }
 
-// Hooking an instance method with an argument.
-- (void)messageName:(int)argument {
-	%log; // Write a message about this call, including its class, name and arguments, to the system log.
-
-	%orig; // Call through to the original function with its original arguments.
-	%orig(nil); // Call through to the original function with a custom argument.
-
-	// If you use %orig(), you MUST supply all arguments (except for self and _cmd, the automatically generated ones.)
-}
-
-// Hooking an instance method with no arguments.
-- (id)noArguments {
-	%log;
-	id awesome = %orig;
-	[awesome doSomethingElse];
-
-	return awesome;
-}
-
-// Always make sure you clean up after yourself; Not doing so could have grave consequences!
 %end
-*/
